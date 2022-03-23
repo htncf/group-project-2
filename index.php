@@ -32,6 +32,10 @@
 </body>
 </html>
 <?php
+$db = new PDO('pgsql:host=localhost;dbname=postgres', 'postgres', 'Niko250200');
+$db->query("SET NAMES 'utf8'");
+$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
 function afficherTableauDesScores($db){
     $requete=$db->prepare("select * from pseudos order by score desc limit 5");
     $requete->execute();
