@@ -3,9 +3,11 @@ $db = new PDO('pgsql:host=localhost;dbname=postgres', 'postgres', 'Niko250200');
 $db->query("SET NAMES 'utf8'");
 $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-function entrerScore($db){
-    $score=100;
-    $pseudo=$_GET['pseudo'];
+
+$score=100;
+$pseudo=$_GET['pseudo'];
+
+function entrerScore($db, $pseudo, $score){
     $requete=$db->prepare("select count(*) as nb from pseudos where pseudo='$pseudo'");
     $requete->execute();
     $tab=$requete->fetch(PDO::FETCH_ASSOC);
@@ -27,13 +29,18 @@ function afficherTableauDesScores($db){
     $requete->execute();
     $tab=$requete->fetchAll(PDO::FETCH_ASSOC);
 
-    echo "<table>";
+    echo "<table><th>Pseudo</th><th>Score</th>";
     foreach($tab as $value){
-        echo "<tr><td>Pseudo : ".$value['pseudo']."</td><td>Score : ".$value['score']."</td></tr>";
+        echo "<tr><td>".$value['pseudo']."</td><td>".$value['score']."</td></tr>";
     }
     echo "</table>";
 }
 
-entrerScore($db);
+function afficherScore($pseudo, $score){
+    echo $pseudo." ton score est ".$score."!!!<br>";
+}
+
+entrerScore($db, $pseudo, $score);
+afficherScore($pseudo, $score);
 afficherTableauDesScores($db);
 ?>
