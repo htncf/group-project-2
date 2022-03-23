@@ -14,7 +14,7 @@
 </body>
 </html>
 <?php
-$db = new PDO('pgsql:host=localhost;dbname=postgres', 'postgres', 'Niko250200');
+$db = new PDO('pgsql:host=localhost;dbname=postgres', 'postgres', 'password');
 $db->query("SET NAMES 'utf8'");
 $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
