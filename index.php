@@ -31,3 +31,18 @@
   </div>
 </body>
 </html>
+<?php
+function afficherTableauDesScores($db){
+    $requete=$db->prepare("select * from pseudos order by score desc limit 5");
+    $requete->execute();
+    $tab=$requete->fetchAll(PDO::FETCH_ASSOC);
+
+    echo "<table><th>Pseudo</th><th>Score</th>";
+    foreach($tab as $value){
+        echo "<tr><td>".$value['pseudo']."</td><td>".$value['score']."</td></tr>";
+    }
+    echo "</table>";
+}
+
+afficherTableauDesScores($db);
+?>
