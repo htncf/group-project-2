@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8">
-<link rel="stylesheet" href="css.css">
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="css.css">
 </head>
 <body>
   <div class="container">
@@ -10,7 +10,7 @@
       <thead>
         <tr>
            <th>Pseudo</th>
-           <th>score</th>
+           <th >score</th>
         </tr>
       </thead>
       <tbody>
@@ -21,11 +21,13 @@
       </tbody>
     </table>
     <br>
+    <br>
     <form action="jeu.php" method="get" class="form-example">
         <div class="login">
           <label for="pseudo">Enter your pseudo: </label>   
           <input type="text" name="pseudo" id="pseudo" required>
         </div>
+    </form>
   </div>
 </body>
 </html>
