@@ -25,8 +25,6 @@ catch (Exception $e)
 {
   die('Erreur : ' . $e->getMessage());
 }
-$db->query("SET NAMES 'utf8'");
-$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 function afficherTableauDesScores($db){
   $requete=$db->prepare("select * from pseudos order by score desc limit 5");
