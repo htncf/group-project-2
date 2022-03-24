@@ -5,7 +5,7 @@
   <link rel="stylesheet" href="css.css">
 </head>
 <body>
-  <form action="jeu.php" method="get" class="form-example">
+  <form method="post" class="form-example">
     <div class="login">
       <label for="pseudo">Enter your pseudo: </label>   
       <input type="text" name="pseudo" id="pseudo" required>
@@ -26,6 +26,13 @@ catch (Exception $e)
   die('Erreur : ' . $e->getMessage());
 }
 
+$score=2000;
+if (isset($_POST['pseudo'])){
+  $pseudo=$_POST['pseudo'];
+  entrerScore($db, $pseudo, $score);
+  afficherScore($pseudo, $score);
+}
+
 function afficherTableauDesScores($db){
   $requete=$db->prepare("select * from pseudos order by score desc limit 5");
   $requete->execute();
@@ -38,6 +45,26 @@ function afficherTableauDesScores($db){
   }
   echo "</table>";
   echo "</div>";
+}
+
+function entrerScore($db, $pseudo, $score){
+    $requete=$db->prepare("select count(*) as nb from pseudos where pseudo='$pseudo'");
+    $requete->execute();
+    $tab=$requete->fetch(PDO::FETCH_ASSOC);
+    
+    if ($tab['nb']==0){
+        $requete=$db->prepare("insert into pseudos values ('$pseudo', '$score')");
+        echo "new<br>";
+    }
+    else {
+        $requete=$db->prepare("update pseudos set score='$score' where pseudo='$pseudo'");
+        echo "old<br>";
+    }
+    $requete->execute();
+}
+
+function afficherScore($pseudo, $score){
+    echo $pseudo." ton score est ".$score."!!!<br>";
 }
 
 afficherTableauDesScores($db);
