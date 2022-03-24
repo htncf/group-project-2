@@ -27,10 +27,13 @@ catch (Exception $e)
 }
 
 $score=2000;
-if (isset($_POST['pseudo'])){
+if (isset($_POST['pseudo']) && strlen($_POST['pseudo'])<=20){
   $pseudo=$_POST['pseudo'];
   entrerScore($db, $pseudo, $score);
   afficherScore($pseudo, $score);
+}
+elseif (isset($_POST['pseudo']) && strlen($_POST['pseudo'])>20){
+  echo "<script>alert(\"Le pseudo doit faire 20 caractères maximum\")</script>";
 }
 
 function afficherTableauDesScores($db){
