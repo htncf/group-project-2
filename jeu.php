@@ -1,8 +1,15 @@
 <?php
-$db = new PDO('pgsql:host=localhost;dbname=postgres', 'postgres', 'password');
-$db->query("SET NAMES 'utf8'");
-$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
+try
+{
+    $db = new PDO('mysql:host=sql11.freesqldatabase.com:3306;dbname=sql11481224;charset=utf8', 'sql11481224', 'as7hUUwD7X');
+    $db->query("SET NAMES 'utf8'");
+    $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    echo "ok";
+}
+catch (Exception $e)
+{
+  die('Erreur : ' . $e->getMessage());
+}
 
 $score=100;
 $pseudo=$_GET['pseudo'];
@@ -23,24 +30,10 @@ function entrerScore($db, $pseudo, $score){
     $requete->execute();
 }
 
-
-function afficherTableauDesScores($db){
-    $requete=$db->prepare("select * from pseudos order by score desc limit 5");
-    $requete->execute();
-    $tab=$requete->fetchAll(PDO::FETCH_ASSOC);
-
-    echo "<table><th>Pseudo</th><th>Score</th>";
-    foreach($tab as $value){
-        echo "<tr><td>".$value['pseudo']."</td><td>".$value['score']."</td></tr>";
-    }
-    echo "</table>";
-}
-
 function afficherScore($pseudo, $score){
     echo $pseudo." ton score est ".$score."!!!<br>";
 }
 
 entrerScore($db, $pseudo, $score);
 afficherScore($pseudo, $score);
-afficherTableauDesScores($db);
 ?>
