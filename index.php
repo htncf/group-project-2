@@ -7,7 +7,7 @@
 <body>
   <h1>T-rex surfers</h1>
   <div class="jeu"></div>
-  <form action="jeu.php" method="get" class="form-example">
+  <form method="get" class="form-example">
     <div class="login">
       <label for="pseudo">Please enter your pseudo: </label>   
       <input type="text" name="pseudo" id="pseudo" required>
@@ -37,6 +37,25 @@ elseif (isset($_POST['pseudo']) && strlen($_POST['pseudo'])>20){
   echo "<script>alert(\"Le pseudo doit faire 20 caractères maximum\")</script>";
 }
 
+function entrerScore($db, $pseudo, $score){
+  $requete=$db->prepare("select count(*) as nb from pseudos where pseudo='$pseudo'");
+  $requete->execute();
+  $tab=$requete->fetch(PDO::FETCH_ASSOC);
+  
+  if ($tab['nb']==0){
+      $requete=$db->prepare("insert into pseudos values ('$pseudo', '$score')");
+      echo "new<br>";
+  }
+  else {
+      $requete=$db->prepare("update pseudos set score='$score' where pseudo='$pseudo'");
+      echo "old<br>";
+  }
+  $requete->execute();
+}
+
+function afficherScore($pseudo, $score){
+  echo $pseudo." ton score est ".$score."!!!<br>";
+}
 
 function afficherTableauDesScores($db){
   $requete=$db->prepare("select * from pseudos order by score desc limit 10");
