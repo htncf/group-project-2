@@ -1,0 +1,562 @@
+index.php
+
+
+
+
+
+
+
+
+
+<?php
+    try
+    {
+        $db = new PDO('mysql:host=sql11.freesqldatabase.com:3306;dbname=sql11481224;charset=utf8', 'sql11481224', 'as7hUUwD7X');
+        $db->query("SET NAMES 'utf8'");
+        $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    }
+    catch (Exception $e)
+    {
+        die('Erreur : ' . $e->getMessage());
+    }
+    
+    function entrerScore($db, $pseudo, $score){
+        $requete=$db->prepare("select count(*) as nb from pseudos where pseudo='$pseudo'");
+        $requete->execute();
+        $tab=$requete->fetch(PDO::FETCH_ASSOC);
+        
+        if ($tab['nb']==0){
+            $requete=$db->prepare("insert into pseudos values ('$pseudo', '$score')");
+            afficherScore($pseudo, $score);
+        }
+        else {
+            //check if score is better
+            $pre_requete=$db->prepare("select score from pseudos where pseudo='$pseudo'");
+            $pre_requete->execute();
+            $tab=$pre_requete->fetch(PDO::FETCH_ASSOC);
+
+            if($tab['score'] < $score){
+                $requete=$db->prepare("update pseudos set score='$score' where pseudo='$pseudo'");
+                afficherScore($pseudo, $score);
+            }
+        }
+        $requete->execute();
+    }
+    
+    function afficherScore($pseudo, $score){
+        echo "<div class='php'>".$pseudo.", ton score de ".$score." a été sauvegardé.</div>";
+    }
+    
+    function afficherTableauDesScores($db){
+        $requete=$db->prepare("select * from pseudos order by score desc limit 10");
+        $requete->execute();
+        $tab=$requete->fetchAll(PDO::FETCH_ASSOC);
+        
+        echo "<table id='score-table'><th>Rank</th><th>Pseudo</th><th>Score</th>";
+        $i = 1;
+        foreach($tab as $value){
+            if($i == 1){
+                echo "<tr><td id='crown'></td><td>".$value['pseudo']."</td><td>".$value['score']."</td></tr>";
+            }
+            else{
+                echo "<tr><td class='rank'>".$i."</td><td>".$value['pseudo']."</td><td>".$value['score']."</td></tr>";
+            }
+            $i++;
+        }
+        echo "</table>";
+    }
+?>
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="index.css">
+    </head>
+    <body>
+        <div id="content">
+            <div id="leftPart">
+                <div id="subLeftPart">
+                    <h1>T-rex Surfers</h1>
+                    <?php
+                        afficherTableauDesScores($db);
+                    ?>
+                </div>
+            </div>
+            <div id="rightPart">
+                <div id="subRightPart">
+                    <form method="post" id="login-form">
+                        <label for="pseudo">Enter your pseudo: </label>   
+                        <input type="text" name="pseudo" id="pseudo" required>
+                        <input type="text" name="score" id="score" style="display: none;">
+                        <input type="submit" id="form-submit">
+                    </form>
+                    <?php
+                        if(isset($_POST["pseudo"])){
+                            $pseudo = str_replace(' ', '', $_POST["pseudo"]);
+                            if($pseudo != null && $pseudo != "" && strlen($pseudo) <= 10){
+                                echo "<div class='php'>Vous êtes connecté sous le pseudo <span id='playerPseudo'>$pseudo</span>. <a href=''>Se déconnecter.</a></div>";
+                                if(isset($_POST["score"])){
+                                    $score = str_replace(' ', '', $_POST["score"]);
+                                    if($score != null && $score != ""){
+                                        entrerScore($db, $pseudo, $score);
+                                    }
+                                }
+                            }
+                            else{
+                                echo "<script>alert(\"$pseudo non valide. Le pseudo doit faire 10 caractères maximum et 1 caractère minimum espaces non compris.\")</script>";
+                            }
+                        }  
+                    ?>
+                    <div id="game">
+                        <div id="score-game">0</div>
+                        <div id="dino"></div>
+                        <button id="play-button" onclick="LaunchGame()"></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="script.js"></script>
+    </body>
+</html>
+
+
+
+
+
+
+
+
+
+
+index.css
+
+
+
+
+
+
+
+
+@font-face {
+  font-family: T-rex;
+  src: url('T-rex.ttf');
+}
+
+*{
+  font-family: T-rex;
+  /*border: 1px solid black;*/
+}
+
+#content{
+  display: flex;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+#rightPart{
+  
+}
+
+#subRightPart{
+  position: relative;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+
+#login-form{
+  padding: 20px;
+  font-size: 32px;
+}
+
+#pseudo{
+  position: relative;
+  top: 50%;
+  left: 10px;
+  transform: translate(0, -10%);
+}
+
+#form-submit{
+  position: relative;
+  top: 50%;
+  left: 10px;
+  transform: translate(0, -10%);
+}
+
+#playerPseudo{
+  font-size: 32px;
+}
+
+.php{
+  font-size: 32px;
+  margin: 20px;
+}
+
+#game {
+  width: 1000px;
+  height: 450px;
+  border: 1px solid black;
+  margin: auto;
+  position: relative;
+}
+
+#dino {
+  width: 80px;
+  height: 50px;
+  background-image: url(img/dino.gif);
+  background-size: 80px 50px;
+  position: absolute;
+  left: 20px;
+}
+
+#score-game{
+  font-size: 32px;
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translate(-50%, 0);
+}
+
+#play-button{
+  border: none;
+  width: 50px;
+  height: 50px;
+  background: url("img/icons8-play-button-circled-50.png") 50px 50px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.cactus {
+  width: 50px;
+  height: 50px;
+  position: absolute;
+  left: -25px;
+  margin: 0;
+  
+  background-image: url("img/asteroid.png");
+  background-size: 50px 50px;
+}
+
+@keyframes block {
+  0% {
+    left: 950px;
+  }
+  100% {
+    left: -50px;
+  }
+}
+
+#leftPart{
+  
+}
+
+#subLeftPart{
+  position: relative;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+h1{
+  margin: 0;
+  padding: 20px;
+}
+
+#score-table{
+  padding: 20px;
+  font-size: 24px;
+  
+}
+
+#score-table tr th{
+  text-align: center;
+  min-width: 100px;
+}
+
+#score-table tr td{
+  text-align: center;
+  min-width: 100px;
+}
+
+#crown{
+  background: url("img/couronne.png") no-repeat center;
+}
+
+.rank{
+  text-align: center;
+}
+
+
+
+
+
+
+
+
+script.js
+
+
+
+
+
+
+
+
+
+const game = document.getElementById("game");
+const dino = document.getElementById("dino");
+const scoreElem = document.getElementById("score-game");
+const playButton = document.getElementById("play-button");
+const playerPseudo = document.getElementById("playerPseudo");
+const scoreInput = document.getElementById("score");
+const form = document.getElementById("login-form");
+const pseudoInput = document.getElementById("pseudo");
+
+let tabCactus = Create2DArray(5);
+
+let tab = [0, 100, 200, 300, 400];
+let i = 2;
+let commonSpeed = 2;
+let score = 0;
+let lastLine = -1;
+
+dino.style.top = tab[i] + "px";
+
+if (playerPseudo != null){
+  form.style.display = "none";
+}
+
+document.addEventListener('keydown', function(e) {
+  switch (e.code) {
+    case "ArrowDown":
+      if(i < 4){
+        dino.style.top = tab[i + 1] + "px";
+        i++;
+      }
+      break;
+    case "ArrowUp":
+      if(i > 0){
+        dino.style.top = tab[i - 1] + "px";
+        i--;
+      }
+      break;
+    case "KeyW":
+      if(i > 0){
+        dino.style.top = tab[i - 1] + "px";
+        i--;
+      }
+      break;
+    case "KeyS":
+      if(i < 4){
+        dino.style.top = tab[i + 1] + "px";
+        i++;
+      }
+      break;
+  }
+});
+
+function LaunchGame(){
+  if (playerPseudo == null){
+    alert("Entrez un pseudo pour jouer.");
+    return;
+  }
+  playButton.parentNode.removeChild(playButton);
+  // Set img to gif
+  let spawnCactus = setInterval(function(){
+    let a = Math.floor(Math.random() * 5);
+    while(a === lastLine){
+      a = Math.floor(Math.random() * 5);
+    }
+    if(a === 5){
+      a = 4;
+    }
+    CreateACactus(a, Math.random() * 2 + commonSpeed);
+    lastLine = a;
+  }, 500);
+  
+  let checkPos = setInterval(function () {
+    for (let t = 0; t < tabCactus.length; t++) {
+      for (let c = 0; c < tabCactus[t].length; c++) {
+        let cactusLeftPos = parseInt(window.getComputedStyle(tabCactus[t][c]).getPropertyValue("left"));
+        if(cactusLeftPos <= -10){
+          score++;
+          scoreElem.innerHTML = score;
+          tabCactus[t][c].parentNode.removeChild(tabCactus[t][c]);
+          commonSpeed = 1.5 - (score/1000);
+          //console.log(commonSpeed);
+        }
+      }
+    }
+    for (let m = 0; m < tabCactus[i].length; m++) {
+      let cactusOnLineLeftPos = parseInt(window.getComputedStyle(tabCactus[i][m]).getPropertyValue("left"));
+      if(cactusOnLineLeftPos <= 100 && cactusOnLineLeftPos >= 0){
+        clearInterval(spawnCactus);
+        clearInterval(checkPos);
+        StopEverything();
+        scoreInput.value = score;
+        pseudoInput.value = playerPseudo.innerHTML;
+        form.submit();
+      }
+    }
+  }, 10);
+}
+
+function StopEverything(){
+  for (let d = 0; d < tabCactus.length; d++) {
+    for (let j = 0; j < tabCactus[d].length; j++) {
+      let pos = parseInt(window.getComputedStyle(tabCactus[d][j]).getPropertyValue("left"));
+      tabCactus[d][j].style.animation = "";
+      tabCactus[d][j].style.left = pos + "px";
+    } 
+  }
+}
+
+function CreateACactus(line, speed){
+  let cactus = document.createElement("div");
+  cactus.classList.add("cactus");
+  cactus.style.top = tab[line] + "px";
+  cactus.style.animation = "block " + speed + "s linear";
+  tabCactus[line][tabCactus[line].length] = cactus;
+  game.appendChild(cactus);
+}
+
+function Create2DArray(rows) {
+  let arr = [];
+
+  for (let z=0; z<rows; z++) {
+    arr[z] = [];
+  }
+
+  return arr;
+}const game = document.getElementById("game");
+const dino = document.getElementById("dino");
+const scoreElem = document.getElementById("score-game");
+const playButton = document.getElementById("play-button");
+const playerPseudo = document.getElementById("playerPseudo");
+const scoreInput = document.getElementById("score");
+const form = document.getElementById("login-form");
+const pseudoInput = document.getElementById("pseudo");
+
+let tabCactus = Create2DArray(5);
+
+let tab = [0, 100, 200, 300, 400];
+let i = 2;
+let commonSpeed = 2;
+let score = 0;
+let lastLine = -1;
+
+dino.style.top = tab[i] + "px";
+
+if (playerPseudo != null){
+  form.style.display = "none";
+}
+
+document.addEventListener('keydown', function(e) {
+  switch (e.code) {
+    case "ArrowDown":
+      if(i < 4){
+        dino.style.top = tab[i + 1] + "px";
+        i++;
+      }
+      break;
+    case "ArrowUp":
+      if(i > 0){
+        dino.style.top = tab[i - 1] + "px";
+        i--;
+      }
+      break;
+    case "KeyW":
+      if(i > 0){
+        dino.style.top = tab[i - 1] + "px";
+        i--;
+      }
+      break;
+    case "KeyS":
+      if(i < 4){
+        dino.style.top = tab[i + 1] + "px";
+        i++;
+      }
+      break;
+  }
+});
+
+function LaunchGame(){
+  if (playerPseudo == null){
+    alert("Entrez un pseudo pour jouer.");
+    return;
+  }
+  playButton.parentNode.removeChild(playButton);
+  // Set img to gif
+  let spawnCactus = setInterval(function(){
+    let a = Math.floor(Math.random() * 5);
+    while(a === lastLine){
+      a = Math.floor(Math.random() * 5);
+    }
+    if(a === 5){
+      a = 4;
+    }
+    CreateACactus(a, Math.random() * 2 + commonSpeed);
+    lastLine = a;
+  }, 500);
+  
+  let checkPos = setInterval(function () {
+    for (let t = 0; t < tabCactus.length; t++) {
+      for (let c = 0; c < tabCactus[t].length; c++) {
+        let cactusLeftPos = parseInt(window.getComputedStyle(tabCactus[t][c]).getPropertyValue("left"));
+        if(cactusLeftPos <= -10){
+          score++;
+          scoreElem.innerHTML = score;
+          tabCactus[t][c].parentNode.removeChild(tabCactus[t][c]);
+          commonSpeed = 1.5 - (score/1000);
+          //console.log(commonSpeed);
+        }
+      }
+    }
+    for (let m = 0; m < tabCactus[i].length; m++) {
+      let cactusOnLineLeftPos = parseInt(window.getComputedStyle(tabCactus[i][m]).getPropertyValue("left"));
+      if(cactusOnLineLeftPos <= 100 && cactusOnLineLeftPos >= 0){
+        clearInterval(spawnCactus);
+        clearInterval(checkPos);
+        StopEverything();
+        scoreInput.value = score;
+        pseudoInput.value = playerPseudo.innerHTML;
+        form.submit();
+      }
+    }
+  }, 10);
+}
+
+function StopEverything(){
+  for (let d = 0; d < tabCactus.length; d++) {
+    for (let j = 0; j < tabCactus[d].length; j++) {
+      let pos = parseInt(window.getComputedStyle(tabCactus[d][j]).getPropertyValue("left"));
+      tabCactus[d][j].style.animation = "";
+      tabCactus[d][j].style.left = pos + "px";
+    } 
+  }
+}
+
+function CreateACactus(line, speed){
+  let cactus = document.createElement("div");
+  cactus.classList.add("cactus");
+  cactus.style.top = tab[line] + "px";
+  cactus.style.animation = "block " + speed + "s linear";
+  tabCactus[line][tabCactus[line].length] = cactus;
+  game.appendChild(cactus);
+}
+
+function Create2DArray(rows) {
+  let arr = [];
+
+  for (let z=0; z<rows; z++) {
+    arr[z] = [];
+  }
+
+  return arr;
+}
+
