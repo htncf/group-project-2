@@ -185,6 +185,13 @@ label{
   transform: translate(0, -10%);
 }
 
+#form-submit{
+  position: relative;
+  top: 50%;
+  left: 10px;
+  transform: translate(0, -10%);
+}
+
 #game {
   width: 1000px;
   height: 450px;
