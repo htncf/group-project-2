@@ -8,6 +8,7 @@ index.php
 
 
 
+
 <?php
     try
     {
@@ -44,7 +45,7 @@ index.php
     }
     
     function afficherScore($pseudo, $score){
-        echo "<div class='php'>".$pseudo.", ton score de ".$score." a été sauvegardé.</div>";
+        echo "<div class='php'>".$pseudo.", your score  ".$score." has been saved.</div>";
     }
     
     function afficherTableauDesScores($db){
@@ -118,6 +119,24 @@ index.php
         <script src="script.js"></script>
     </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
