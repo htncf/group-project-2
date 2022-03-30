@@ -147,16 +147,23 @@ index.css
   /*border: 1px solid black;*/
 }
 
+body{
+  background: url("coverture.png")
+}
+
 #content{
   display: flex;
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  background-color: white;
+  border: 1px solid black;
+  border-radius: 10px;
 }
 
-#rightPart{
-  
+label{
+  font-weight: 900;
 }
 
 #subRightPart{
@@ -168,45 +175,31 @@ index.css
 
 
 #login-form{
-  padding: 20px;
+  padding: 20px 20px 20px 300px;
   font-size: 32px;
+  border-radius: 10px;
 }
 
-#pseudo{
+#pseudo {
   position: relative;
   top: 50%;
   left: 10px;
   transform: translate(0, -10%);
-}
-
-#form-submit{
-  position: relative;
-  top: 50%;
-  left: 10px;
-  transform: translate(0, -10%);
-}
-
-#playerPseudo{
-  font-size: 32px;
-}
-
-.php{
-  font-size: 32px;
-  margin: 20px;
 }
 
 #game {
   width: 1000px;
   height: 450px;
   border: 1px solid black;
-  margin: auto;
+  margin: auto 10px 20px auto ;
   position: relative;
+  border-radius: 10px;
 }
 
 #dino {
   width: 80px;
   height: 50px;
-  background-image: url(img/dino.gif);
+  background-image: url(dino.gif);
   background-size: 80px 50px;
   position: absolute;
   left: 20px;
@@ -224,11 +217,19 @@ index.css
   border: none;
   width: 50px;
   height: 50px;
-  background: url("img/icons8-play-button-circled-50.png") 50px 50px;
+  background: url("icons8-play-button-circled-50.png") 50px 50px;
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+}
+
+
+#score{
+  font-size: 32px;
+  position: absolute;
+  top: 10px;
+  left: 50%;
 }
 
 .cactus {
@@ -237,8 +238,7 @@ index.css
   position: absolute;
   left: -25px;
   margin: 0;
-  
-  background-image: url("img/asteroid.png");
+  background-image: url("asteroid.png");
   background-size: 50px 50px;
 }
 
@@ -251,9 +251,7 @@ index.css
   }
 }
 
-#leftPart{
-  
-}
+
 
 #subLeftPart{
   position: relative;
@@ -263,32 +261,51 @@ index.css
 }
 
 h1{
-  margin: 0;
-  padding: 20px;
+  margin: 0 0 0 30px;
+  font-size: 4em;
+  background-color: white;
+  display: inline-block;
 }
 
 #score-table{
-  padding: 20px;
   font-size: 24px;
-  
+  padding: 10px 20px;
+  color: black;  
 }
 
 #score-table tr th{
+  background-color: black;
+  color: white;
   text-align: center;
   min-width: 100px;
+  border: 1px solid black;
 }
 
 #score-table tr td{
   text-align: center;
   min-width: 100px;
+  padding: 5px;
+  border: 1px solid black;
 }
 
 #crown{
-  background: url("img/couronne.png") no-repeat center;
+  background: url("couronne.png") no-repeat center;
 }
 
 .rank{
   text-align: center;
+}
+
+.php{
+  padding: 20px 20px 20px 290px;
+  font-size: 32px;
+  border-radius: 10px;
+  font-weight: 700;
+}
+
+a {
+  color: black;
+  margin: 30px 0 0 0;
 }
 
 
