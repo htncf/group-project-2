@@ -70,7 +70,7 @@ index.php
 <html>
     <head>
         <meta charset="utf-8">
-        <link rel="stylesheet" href="index.css">
+        <link rel="stylesheet" href="css.css">
     </head>
     <body>
         <div id="content">
@@ -94,7 +94,7 @@ index.php
                         if(isset($_POST["pseudo"])){
                             $pseudo = str_replace(' ', '', $_POST["pseudo"]);
                             if($pseudo != null && $pseudo != "" && strlen($pseudo) <= 10){
-                                echo "<div class='php'>Vous êtes connecté sous le pseudo <span id='playerPseudo'>$pseudo</span>. <a href=''>Se déconnecter.</a></div>";
+                                echo "<div class='php'>You are logged in as : <span id='playerPseudo'>$pseudo</span>. <a href=''>Sign out.</a></div>";
                                 if(isset($_POST["score"])){
                                     $score = str_replace(' ', '', $_POST["score"]);
                                     if($score != null && $score != ""){
@@ -103,7 +103,7 @@ index.php
                                 }
                             }
                             else{
-                                echo "<script>alert(\"$pseudo non valide. Le pseudo doit faire 10 caractères maximum et 1 caractère minimum espaces non compris.\")</script>";
+                                echo "<script>alert(\"$pseudo invalid. The nickname must be a maximum of 10 fucking characters and a minimum of 1 character, spaces not included..\")</script>";
                             }
                         }  
                     ?>
@@ -118,8 +118,6 @@ index.php
         <script src="script.js"></script>
     </body>
 </html>
-
-
 
 
 
